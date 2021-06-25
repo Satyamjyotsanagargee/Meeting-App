@@ -24,9 +24,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements UsersListener {
     private PreferenceManager preferenceManager;
-    private List<User>users;
+    private List<User> users;
     private UserAdapter usersAdapter;
-    private TextView    textErrorMessage;
+    private TextView textErrorMessage;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -44,26 +44,26 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
         ));
         findViewById(R.id.textSignOut).setOnClickListener(v -> signOut());
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if(task.isSuccessful() && task.getResult()!=null){
+            if (task.isSuccessful() && task.getResult() != null) {
                 sendFCMTokenToDatabase(task.getResult());
             }
 
         });
-        RecyclerView usersRecyclerView=findViewById(R.id.usersRecyclerView);
-        textErrorMessage=findViewById(R.id.textErrorMessage);
+        RecyclerView usersRecyclerView = findViewById(R.id.usersRecyclerView);
+        textErrorMessage = findViewById(R.id.textErrorMessage);
 
-        users=new ArrayList<>();
-        usersAdapter=new UserAdapter(users,this);
+        users = new ArrayList<>();
+        usersAdapter = new UserAdapter(users, this);
         usersRecyclerView.setAdapter(usersAdapter);
-        swipeRefreshLayout=findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::getUsers);
         getUsers();
 
     }
-    private void getUsers()
-    {
+
+    private void getUsers() {
         swipeRefreshLayout.setRefreshing(true);
-        FirebaseFirestore database=FirebaseFirestore.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -71,32 +71,32 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     String myUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                     if (task.isSuccessful() && task.getResult() != null) {
                         users.clear();
-                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
-                            if(myUserId.equals(documentSnapshot.getId())){
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            if (myUserId.equals(documentSnapshot.getId())) {
                                 continue;
 
                             }
-                            User user =new User();
-                            user.firstName=documentSnapshot.getString(Constants.KEY_FIRST_NAME);
-                            user.lastName=documentSnapshot.getString(Constants.KEY_LAST_NAME);
-                            user.email=documentSnapshot.getString(Constants.KEY_EMAIL);
-                            user.token=documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
+                            User user = new User();
+                            user.firstName = documentSnapshot.getString(Constants.KEY_FIRST_NAME);
+                            user.lastName = documentSnapshot.getString(Constants.KEY_LAST_NAME);
+                            user.email = documentSnapshot.getString(Constants.KEY_EMAIL);
+                            user.token = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
                             users.add(user);
                         }
-                        if(users.size()>0)
-                        {
+                        if (users.size() > 0) {
                             usersAdapter.notifyDataSetChanged();
-                        }else{
+                        } else {
 
-                            textErrorMessage.setText(String.format("%s","No user available"));
+                            textErrorMessage.setText(String.format("%s", "No user available"));
                             textErrorMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        textErrorMessage.setText(String.format("%s","No user available"));
+                        textErrorMessage.setText(String.format("%s", "No user available"));
                         textErrorMessage.setVisibility(View.VISIBLE);
                     }
                 });
     }
+
     private void sendFCMTokenToDatabase(String token) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference =
@@ -108,38 +108,38 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
                 .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to send Token: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
-        private void signOut()
-        {
-            Toast.makeText(this, "Signing Out...", Toast.LENGTH_SHORT).show();
-            FirebaseFirestore database =FirebaseFirestore.getInstance();
-            DocumentReference documentReference=
-                    database.collection(Constants.KEY_COLLECTION_USERS).document(
-                            preferenceManager.getString(Constants.KEY_USER_ID)
-                    );
-            HashMap<String,Object> updates=new HashMap<>();
-            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-            documentReference.update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                 preferenceManager.clearPreference();
-                 startActivity(new Intent(getApplicationContext(),SignInActivity.class));
-                 finish();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to sign out", Toast.LENGTH_SHORT).show());
+
+    private void signOut() {
+        Toast.makeText(this, "Signing Out...", Toast.LENGTH_SHORT).show();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        DocumentReference documentReference =
+                database.collection(Constants.KEY_COLLECTION_USERS).document(
+                        preferenceManager.getString(Constants.KEY_USER_ID)
+                );
+        HashMap<String, Object> updates = new HashMap<>();
+        updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
+        documentReference.update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    preferenceManager.clearPreference();
+                    startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to sign out", Toast.LENGTH_SHORT).show());
 
     }
 
     @Override
     public void initiateVideoMeeting(User user) {
-        if(user.token==null || user.token.trim().isEmpty()){
+        if (user.token == null || user.token.trim().isEmpty()) {
             Toast.makeText(
                     this,
                     user.firstName + "  " + user.lastName + "is not available for meeting",
                     Toast.LENGTH_SHORT
             ).show();
-        }else{
-            Intent intent=new Intent(getApplicationContext(),OutgoingInvitationActivity.class);
-            intent.putExtra("user",user);
-            intent.putExtra("type","video");
+        } else {
+            Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
+            intent.putExtra("user", user);
+            intent.putExtra("type", "video");
             startActivity(intent);
         }
 
@@ -147,18 +147,17 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
     @Override
     public void initiateAudioMeeting(User user) {
-        if(user.token==null || user.token.trim().isEmpty()){
+        if (user.token == null || user.token.trim().isEmpty()) {
             Toast.makeText(
                     this,
                     user.firstName + "  " + user.lastName + "is not available for meeting",
                     Toast.LENGTH_SHORT
             ).show();
-        }else{
-            Toast.makeText(
-                    this,
-                    " Audio meeting with"+"  "+ user.firstName + " " + user.lastName,
-                    Toast.LENGTH_SHORT
-            ).show();
+        } else {
+            Intent intent=new Intent(getApplicationContext(),OutgoingInvitationActivity.class);
+            intent.putExtra("user",user);
+            intent.putExtra("type","audio");
+            startActivity(intent);
 
         }
 

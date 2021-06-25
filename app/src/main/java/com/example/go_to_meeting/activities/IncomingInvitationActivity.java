@@ -29,6 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class IncomingInvitationActivity extends AppCompatActivity {
+    public String meetingType=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,8 @@ public class IncomingInvitationActivity extends AppCompatActivity {
             if (meetingType.equals("video")) {
                 imageMeetingType.setImageResource(R.drawable.ic_video);
 
+            }else{
+                imageMeetingType.setImageResource(R.drawable.ic_audio);
             }
         }
             TextView textFirstChar = findViewById(R.id.textFirstChar);
@@ -100,13 +103,21 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                     if(type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)){
                         try {
                             URL serverURL=new URL("https://meet.jit.si");
+                            JitsiMeetConferenceOptions.Builder builder=new JitsiMeetConferenceOptions.Builder();
+                            builder.setServerURL(serverURL);
+                            builder.setWelcomePageEnabled(false);
+                            builder.setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM));
+                            if(meetingType!=null)
+                            {
+                                builder.setVideoMuted(true);
+                            }
                             JitsiMeetConferenceOptions conferenceOptions=
                                     new JitsiMeetConferenceOptions.Builder()
                                     .setServerURL(serverURL)
                                     .setWelcomePageEnabled(false)
                                     .setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
                                     .build();
-                            JitsiMeetActivity.launch(IncomingInvitationActivity.this,conferenceOptions);
+                            JitsiMeetActivity.launch(IncomingInvitationActivity.this,builder.build());
                             finish();
 
                         }catch (Exception exception){
