@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "846270934599",
+    "project_id": "video-meeting-acdf7",
+    "storage_bucket": "video-meeting-acdf7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846270934599:android:70b1616754a35a72a90b62",
+        "android_client_info": {
+          "package_name": "com.example.gotomeeting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846270934599-8scpsiabkov944ac73qtijj6dl65ocsr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPXBfD2lQLM8nF1SFD4CepqTjqXSjR1Jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846270934599-8scpsiabkov944ac73qtijj6dl65ocsr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
