@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".activities.MainActivity">
 <LinearLayout
     android:id="@+id/LayoutHeader"
@@ -71,7 +72,6 @@
         android:textSize="@dimen/_13ssp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/LayoutHeader"/>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

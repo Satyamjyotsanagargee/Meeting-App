@@ -27,16 +27,15 @@ public class Constants {
     public static final String REMOTE_MSG_MEETING_ROOM="meetingRoom";
 
 
-
-    public static HashMap<String,String> getRemoteMessageHeaders(){
-        HashMap<String,String> headers=new HashMap<>();
+    public static HashMap<String, String> getRemoteMessageHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
         headers.put(
                 Constants.REMOTE_MSG_AUTHORIZATION,
                 "key= AAAAxQmtrkc:APA91bGj-ryfmnIYJWBfhiycfCsx4y9_N3vEeH82H6_OPPtLOAlE3BrTF_F7iijXJozmsnJeumrP3kc9-8B2Md8U5UB_eLYBSRUmZksAabx11EOeVgZMAjdRxBLdHlcFRsX1kYnwMKiW"
 
         );
-headers.put(Constants.REMOTE_MSG_CONTENT_TYPE,"application/json");
-return headers;
+        headers.put(Constants.REMOTE_MSG_CONTENT_TYPE, "application/json");
+        return headers;
 
     }
 }

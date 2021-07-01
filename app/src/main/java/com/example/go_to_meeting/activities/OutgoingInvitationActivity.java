@@ -26,13 +26,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.auth.Token;
 import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -42,63 +46,60 @@ import retrofit2.Response;
 public class OutgoingInvitationActivity extends AppCompatActivity {
 
     private PreferenceManager preferenceManager;
-    private String inviterToken=null;
-    private String meetingRoom=null;
-    private String meetingType=null;
-
+    private String inviterToken = null;
+    private String meetingRoom = null;
+    private String meetingType = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outgoing_invitation);
-        preferenceManager= new PreferenceManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
-        ImageView imageMeetingType=findViewById(R.id.imageMeetingType);
-         meetingType =getIntent().getStringExtra("type");
+        ImageView imageMeetingType = findViewById(R.id.imageMeetingType);
+        meetingType = getIntent().getStringExtra("type");
 
-        if(meetingType!=null){
-            if(meetingType.equals("video"))
-            {
+        if (meetingType != null) {
+            if (meetingType.equals("video")) {
                 imageMeetingType.setImageResource(R.drawable.ic_video);
-            } else{
+            } else {
                 imageMeetingType.setImageResource(R.drawable.ic_audio);
             }
         }
-        TextView textFirstChar=findViewById(R.id.textFirstChar);
-        TextView textUsername=findViewById(R.id.textUsername);
-        TextView textEmail=findViewById(R.id.textEmail);
-        User user=(User)getIntent().getSerializableExtra("user");
-        if(user!=null){
-            textFirstChar.setText(user.firstName.substring(0,1));
-            textUsername.setText(String.format("%s %s",user.firstName,user.lastName));
+
+        TextView textFirstChar = findViewById(R.id.textFirstChar);
+        TextView textUsername = findViewById(R.id.textUsername);
+        TextView textEmail = findViewById(R.id.textEmail);
+        User user = (User) getIntent().getSerializableExtra("user");
+        if (user != null) {
+            textFirstChar.setText(user.firstName.substring(0, 1));
+            textUsername.setText(String.format("%s %s", user.firstName, user.lastName));
             textEmail.setText(user.email);
         }
-       ImageView imageViewStopInvitation=findViewById(R.id.imageStopInvitation);
+        ImageView imageViewStopInvitation = findViewById(R.id.imageStopInvitation);
         imageViewStopInvitation.setOnClickListener(v -> {
-            if(user!=null)
-            {
+            if (user != null) {
                 cancelInvitation(user.token);
             }
         });
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult()!=null){
-                inviterToken=task.getResult();
+            if (task.isSuccessful() && task.getResult() != null) {
+                inviterToken = task.getResult();
 
-                if(meetingType !=null  && user !=null)
-                {
-                    initiateMeeting(meetingType,user.token);
+                if (meetingType != null && user != null) {
+                    initiateMeeting(meetingType, user.token);
                 }
             }
         });
 
     }
 
-    private void  initiateMeeting(String meetingType,String receiverToken) {
+    private void initiateMeeting(String meetingType, String receiverToken) {
         try {
-
             JSONArray tokens = new JSONArray();
+            tokens.put(receiverToken);
             tokens.put(receiverToken);
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
@@ -121,27 +122,27 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             finish();
         }
     }
-    private void  sendRemoteMessage(String remoteMessageBody,String type){
+
+    private void sendRemoteMessage(String remoteMessageBody, String type) {
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
-                Constants.getRemoteMessageHeaders(),remoteMessageBody
+                Constants.getRemoteMessageHeaders(), remoteMessageBody
         ).enqueue(new Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-         if(response.isSuccessful()) {
-             if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
-                 Toast.makeText(OutgoingInvitationActivity.this, "Invitation sent successfully", Toast.LENGTH_SHORT).show();
-             }else if(type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE))
-             {
-                 Toast.makeText(OutgoingInvitationActivity.this, "Invitation Cancelled", Toast.LENGTH_SHORT).show();
-                 finish();
-             }
-         } else {
-                 Toast.makeText(OutgoingInvitationActivity.this, response.message(), Toast.LENGTH_SHORT).show();
-                 finish();
-             }
-         }
+                if (response.isSuccessful()) {
+                    if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
+                        Toast.makeText(OutgoingInvitationActivity.this, "Invitation sent successfully", Toast.LENGTH_SHORT).show();
+                    } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
+                        Toast.makeText(OutgoingInvitationActivity.this, "Invitation Cancelled", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(OutgoingInvitationActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
 
-         @Override
+            @Override
             public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Toast.makeText(OutgoingInvitationActivity.this, "t.getMessage()", Toast.LENGTH_SHORT).show();
 
@@ -199,7 +200,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             }
 
 
-        } else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
+        }else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
         {
             Toast.makeText(context, "Invitation rejected", Toast.LENGTH_SHORT).show();
             finish();
