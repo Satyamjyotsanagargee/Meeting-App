@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
     private TextView textErrorMessage;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-
+    //For Title on the top of screen take first and last name from preference manager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
         ));
         findViewById(R.id.textSignOut).setOnClickListener(v -> signOut());
+         //If task is successful put FCM token in database
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 sendFCMTokenToDatabase(task.getResult());
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
         users = new ArrayList<>();
         usersAdapter = new UserAdapter(users, this);
         usersRecyclerView.setAdapter(usersAdapter);
+        //swipeRefreshLayout allow the users to refresh the screen manually
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::getUsers);
         getUsers();
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     String myUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                     if (task.isSuccessful() && task.getResult() != null) {
                         users.clear();
+                        //Displays user list except for currently signed In user
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             if (myUserId.equals(documentSnapshot.getId())) {
                                 continue;
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                             user.token = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
                             users.add(user);
                         }
+                        //Notify whenever list is updated
                         if (users.size() > 0) {
                             usersAdapter.notifyDataSetChanged();
                         } else {
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     }
                 });
     }
-
+      //To send and receive invitation we need FCM token of Particular User
     private void sendFCMTokenToDatabase(String token) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference =
@@ -122,14 +126,17 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                 database.collection(Constants.KEY_COLLECTION_USERS).document(
                         preferenceManager.getString(Constants.KEY_USER_ID)
                 );
+        //After signing out token is removed
         HashMap<String, Object> updates = new HashMap<>();
         updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
         documentReference.update(updates)
                 .addOnSuccessListener(aVoid -> {
                     preferenceManager.clearPreference();
+                    //After clicking  on sign out button  SignIn page appear
                     startActivity(new Intent(getApplicationContext(), SignInActivity.class));
                     finish();
                 })
+                //If you are not able to sign out  It shows an error message
                 .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to sign out", Toast.LENGTH_SHORT).show());
 
     }
@@ -152,8 +159,10 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
     }
 
     @Override
+    //for audio meeting
     public void initiateAudioMeeting(User user) {
         if (user.token == null || user.token.trim().isEmpty()) {
+            //if user is not active
             Toast.makeText(
                     this,
                     user.firstName + "  " + user.lastName + "is not available for meeting",

@@ -60,6 +60,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         ImageView imageMeetingType = findViewById(R.id.imageMeetingType);
         meetingType = getIntent().getStringExtra("type");
 
+        //if meeting type is video set image of video either set image of audio
         if (meetingType != null) {
             if (meetingType.equals("video")) {
                 imageMeetingType.setImageResource(R.drawable.ic_video);
@@ -83,11 +84,11 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
                 cancelInvitation(user.token);
             }
         });
-
+        //To get inviter token
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 inviterToken = task.getResult();
-
+                //If meeting is cancelled from sender side
                 if (meetingType != null && user != null) {
                     initiateMeeting(meetingType, user.token);
                 }
@@ -98,22 +99,30 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
 
     private void initiateMeeting(String meetingType, String receiverToken) {
         try {
+            //preparing body for api request
             JSONArray tokens = new JSONArray();
             tokens.put(receiverToken);
             tokens.put(receiverToken);
+            //With this json object we pass our custom data with remote message
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
+            //Putting custom data inside
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION);
             data.put(Constants.REMOTE_MSG_MEETING_TYPE, meetingType);
             data.put(Constants.KEY_FIRST_NAME, preferenceManager.getString(Constants.KEY_FIRST_NAME));
             data.put(Constants.KEY_LAST_NAME, preferenceManager.getString(Constants.KEY_LAST_NAME));
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
+            /*when we send invitation to receiver they may accept or reject the call
+            according to that we send a related response to inviter for that we need token of inviter*/
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken);
             meetingRoom =
                     preferenceManager.getString(Constants.KEY_USER_ID) + "_" +
                             UUID.randomUUID().toString().substring(0, 5);
+
             data.put(Constants.REMOTE_MSG_MEETING_ROOM, meetingRoom);
+            //Putting data json object inside body json object
             body.put(Constants.REMOTE_MSG_DATA, data);
+            //putting json array tokens
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
             sendRemoteMessage(body.toString(), Constants.REMOTE_MSG_INVITATION);
 
@@ -122,8 +131,9 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             finish();
         }
     }
-
+//for sending remote message
     private void sendRemoteMessage(String remoteMessageBody, String type) {
+        //Network call using Retrofit
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
                 Constants.getRemoteMessageHeaders(), remoteMessageBody
         ).enqueue(new Callback<String>() {
@@ -150,7 +160,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         });
     }
 
-    private  void  cancelInvitation(String receiverToken) {
+    private void cancelInvitation(String receiverToken) {
         try {
             JSONArray tokens = new JSONArray();
             tokens.put(receiverToken);

@@ -30,10 +30,13 @@ public class IncomingInvitationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_invitation);
+        //For displaying user details in incoming screen
         ImageView imageMeetingType = findViewById(R.id.imageMeetingType);
+        //Here we are getting data from OnMessageReceived method from messaging service
         String meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
         if (meetingType != null) {
             if (meetingType.equals("video")) {
+                //Setting video icon to image view
                 imageMeetingType.setImageResource(R.drawable.ic_video);
 
             } else{
@@ -52,12 +55,17 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                 firstName,
                 getIntent().getStringExtra(Constants.KEY_LAST_NAME)
         ));
+
         textEmail.setText(getIntent().getStringExtra(Constants.KEY_EMAIL));
+
+
         ImageView imageAcceptInvitation = findViewById(R.id.imageAcceptInvitation);
         imageAcceptInvitation.setOnClickListener(v -> sendInvitationResponse(
                 Constants.REMOTE_MSG_INVITATION_ACCEPTED,
                 getIntent().getStringExtra(Constants.REMOTE_MSG_INVITER_TOKEN)
         ));
+
+
         ImageView imageRejectInvitation = findViewById(R.id.imageRejectInvitation);
         imageRejectInvitation.setOnClickListener(v -> sendInvitationResponse(
                 Constants.REMOTE_MSG_INVITATION_REJECTED,
@@ -93,6 +101,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                 Constants.getRemoteMessageHeaders(),remoteMessageBody
         ).enqueue(new Callback<String>() {
             @Override
+            //Implementing the facility of accept or reject meeting invitation
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if(response.isSuccessful()) {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
@@ -137,7 +146,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Getting Invitation/Rejection back from receiver
     private BroadcastReceiver invitationResponseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -152,6 +161,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
     };
 
     @Override
+    //Receiver to receive broadcast message after accepting response
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(
@@ -159,7 +169,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                 new IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
         );
     }
-
+    //Receiver to receive broadcast message after rejecting response
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(

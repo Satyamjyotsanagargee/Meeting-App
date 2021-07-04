@@ -15,12 +15,15 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     @Override
+    //when we call API for sending meeting invitation we will get remote message in this method
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        //type of remote message
         String type = remoteMessage.getData().get(Constants.REMOTE_MSG_TYPE);
         if (type != null) {
             if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
                 Intent intent = new Intent(getApplicationContext(), IncomingInvitationActivity.class);
+                //Passing data using Intent
                 intent.putExtra(
                         Constants.REMOTE_MSG_MEETING_TYPE,
                         remoteMessage.getData().get(Constants.REMOTE_MSG_MEETING_TYPE)
@@ -45,9 +48,13 @@ public class MessagingService extends FirebaseMessagingService {
                         Constants.REMOTE_MSG_MEETING_ROOM,
                         remoteMessage.getData().get(Constants.REMOTE_MSG_MEETING_ROOM)
                 );
+                //We are starting this activity from non activity context so we need to add flag
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-            } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
+
+            }
+            //for sending invitation/Rejection back to the sender
+            else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
                 Intent intent = new Intent(Constants.REMOTE_MSG_INVITATION_RESPONSE);
                 intent.putExtra(
                         Constants.REMOTE_MSG_INVITATION_RESPONSE,

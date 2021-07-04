@@ -60,6 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
         private void signUp()
         {
+            //After clicking signUp button make SignUp button invisible and make signUpProgressBar visible
          buttonSignUp.setVisibility(View.INVISIBLE);
          signUpProgressBar.setVisibility(View.VISIBLE);
          FirebaseFirestore database=FirebaseFirestore.getInstance();
@@ -71,11 +72,13 @@ public class SignUpActivity extends AppCompatActivity {
             database.collection(Constants.KEY_COLLECTION_USERS)
                     .add(user)
             .addOnSuccessListener(documentReference -> {
+                // write all the data entered by the user in SharedPreference
             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN,true);
             preferenceManager.putString(Constants.KEY_USER_ID,documentReference.getId());
             preferenceManager.putString(Constants.KEY_FIRST_NAME,inputFirstName.getText().toString());
             preferenceManager.putString(Constants.KEY_LAST_NAME,inputLastName.getText().toString());
             preferenceManager.putString(Constants.KEY_EMAIL,inputEmail.getText().toString());
+            //After clicking on signUp button go to main activity class
             Intent intent=new Intent(getApplicationContext(),MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

@@ -10,7 +10,8 @@ import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.listeners.UsersListener;
 import com.example.go_to_meeting.models.User;
 import java.util.List;
-
+/*The RecyclerView.Adapter that last bound this RecyclerView.ViewHolder
+ null if this RecyclerView.ViewHolder is not bound by any adapter*/
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private List<User>users;
     private UsersListener usersListener;
@@ -26,6 +27,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @NonNull
     @Override
+   // creates and initializes the ViewHolder and its associated View
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new UserViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
@@ -37,11 +39,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     @Override
+    // fetches the appropriate data and uses the data to fill in the view holder's layout
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         holder.setUserData(users.get(position));
     }
 
     @Override
+    //calls this method to get the size of the data set
     public int getItemCount() {
         return users.size();
     }
