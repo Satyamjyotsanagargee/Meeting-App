@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
+    android:id="@+id/userContainer"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:padding="@dimen/_5sdp">
 
     <TextView
@@ -22,6 +22,22 @@
         app:layout_constraintBottom_toTopOf="@id/viewDivider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/imageSelected"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/background_user_icon"
+        android:contentDescription="@string/App_name"
+        android:padding="@dimen/_3sdp"
+        android:src="@drawable/ic_accept"
+        android:tint="@color/colorTextIcon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/textFirstChar"
+        app:layout_constraintEnd_toEndOf="@id/textFirstChar"
+        app:layout_constraintStart_toStartOf="@id/textFirstChar"
+        app:layout_constraintTop_toTopOf="@id/textFirstChar"
+        />
+
 
     <View
         android:id="@+id/viewSupporter"

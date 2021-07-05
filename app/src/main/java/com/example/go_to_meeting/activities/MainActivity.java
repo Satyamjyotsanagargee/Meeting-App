@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
     private UserAdapter usersAdapter;
     private TextView textErrorMessage;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView imageConference;
 
     //For Title on the top of screen take first and last name from preference manager
     @Override
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preferenceManager = new PreferenceManager(getApplicationContext());
+        imageConference=findViewById(R.id.imageConference);
 
         TextView textTitle = findViewById(R.id.textTitle);
         textTitle.setText(String.format(
@@ -178,4 +180,21 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
     }
 
-}
+    @Override
+    public void onMultipleUsersAction(Boolean isMultipleUsersSelected) {
+        if(isMultipleUsersSelected) {
+            imageConference.setVisibility(View.VISIBLE);
+            imageConference.setOnClickListener(v -> {
+                Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
+                intent.putExtra("selectedUsers", new Gson().toJson(usersAdapter.getSelectedUsers()));
+                intent.putExtra("type", "video");
+                intent.putExtra("isMultiple", true);
+                startActivity(intent);
+
+            });
+        }
+            else {
+            imageConference.setVisibility(View.GONE);
+        }
+    }
+    }

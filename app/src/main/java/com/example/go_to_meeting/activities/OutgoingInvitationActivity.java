@@ -49,6 +49,13 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
     private String inviterToken = null;
     private String meetingRoom = null;
     private String meetingType = null;
+    private TextView textFirstChar;
+    private TextView textUsername;
+    private TextView textEmail;
+    private int totalReceivers = 0;
+    private int rejectionCount = 0;
+
+
 
 
     @Override
@@ -69,9 +76,9 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             }
         }
 
-        TextView textFirstChar = findViewById(R.id.textFirstChar);
-        TextView textUsername = findViewById(R.id.textUsername);
-        TextView textEmail = findViewById(R.id.textEmail);
+        textFirstChar = findViewById(R.id.textFirstChar);
+        textUsername = findViewById(R.id.textUsername);
+        textEmail = findViewById(R.id.textEmail);
         User user = (User) getIntent().getSerializableExtra("user");
         if (user != null) {
             textFirstChar.setText(user.firstName.substring(0, 1));
@@ -80,29 +87,71 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         }
         ImageView imageViewStopInvitation = findViewById(R.id.imageStopInvitation);
         imageViewStopInvitation.setOnClickListener(v -> {
-            if (user != null) {
-                cancelInvitation(user.token);
+            if (getIntent().getBooleanExtra("isMultiple", false)) {
+                Type type = new TypeToken<ArrayList<User>>() {
+
+                }.getType();
+                ArrayList<User> receivers = new Gson().fromJson(getIntent().getStringExtra("selectedUsers"), type);
+                if (receivers != null) {
+                    totalReceivers = receivers.size();
+                }
+                cancelInvitation(null, receivers);
+            } else {
+                if (user != null) {
+                    cancelInvitation(user.token, null);
+                }
             }
         });
+
+
         //To get inviter token
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 inviterToken = task.getResult();
                 //If meeting is cancelled from sender side
-                if (meetingType != null && user != null) {
-                    initiateMeeting(meetingType, user.token);
+                if (meetingType != null) {
+                    if (getIntent().getBooleanExtra("isMultiple", false)) {
+                        Type type = new TypeToken<ArrayList<User>>() {
+
+                        }.getType();
+                        ArrayList<User> receivers = new Gson().fromJson(getIntent().getStringExtra("selectedUsers"), type);
+                        if (receivers != null) {
+                            totalReceivers = receivers.size();
+                        }
+                        initiateMeeting(meetingType, null, receivers);
+                    } else {
+                        if (user != null) {
+                            totalReceivers = 1;
+                            initiateMeeting(meetingType, user.token, null);
+                        }
+                    }
                 }
             }
         });
 
     }
 
-    private void initiateMeeting(String meetingType, String receiverToken) {
+    private void initiateMeeting(String meetingType, String receiverToken, ArrayList<User>receivers) {
         try {
             //preparing body for api request
             JSONArray tokens = new JSONArray();
-            tokens.put(receiverToken);
-            tokens.put(receiverToken);
+            if(receiverToken!=null)
+            {
+                tokens.put(receiverToken);
+            }
+            if(receivers!=null && receivers.size()>0)
+            {
+                StringBuilder userNames=new StringBuilder();
+                for(int i=0;i<receivers.size();i++)
+                {
+                    tokens.put(receivers.get(i).token);
+                    userNames.append(receivers.get(i).firstName).append(" ").append(receivers.get(i).lastName).append("\n");
+                }
+                textFirstChar.setVisibility(View.GONE);
+                textEmail.setVisibility(View.GONE);
+                textUsername.setText(userNames.toString());
+            }
+
             //With this json object we pass our custom data with remote message
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
@@ -160,10 +209,18 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         });
     }
 
-    private void cancelInvitation(String receiverToken) {
+    private void cancelInvitation(String receiverToken, ArrayList<User> receivers) {
         try {
             JSONArray tokens = new JSONArray();
-            tokens.put(receiverToken);
+            if(receiverToken!=null){
+                tokens.put(receiverToken);
+            }
+            if(receivers != null && receivers.size() > 0) {
+                for(User user : receivers) {
+                    tokens.put(user.token);
+                }
+            }
+
             JSONObject body = new JSONObject();
             JSONObject data = new JSONObject();
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION_RESPONSE);
@@ -212,8 +269,11 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
 
         }else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
         {
-            Toast.makeText(context, "Invitation rejected", Toast.LENGTH_SHORT).show();
-            finish();
+            rejectionCount += 1;
+            if(rejectionCount == totalReceivers) {
+                Toast.makeText(context, "Invitation Rejected!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
     }
