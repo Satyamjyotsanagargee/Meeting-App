@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
         if (user.token == null || user.token.trim().isEmpty()) {
             Toast.makeText(
                     this,
-                    user.firstName + "  " + user.lastName + "is not available for meeting",
+                    user.firstName + "  " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT
             ).show();
         } else {
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
             //if user is not active
             Toast.makeText(
                     this,
-                    user.firstName + "  " + user.lastName + "is not available for meeting",
+                    user.firstName + "  " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT
             ).show();
         } else {

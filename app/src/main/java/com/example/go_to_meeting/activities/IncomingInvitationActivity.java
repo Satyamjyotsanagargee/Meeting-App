@@ -33,7 +33,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
         //For displaying user details in incoming screen
         ImageView imageMeetingType = findViewById(R.id.imageMeetingType);
         //Here we are getting data from OnMessageReceived method from messaging service
-        String meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
+         meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
         if (meetingType != null) {
             if (meetingType.equals("video")) {
                 //Setting video icon to image view
@@ -94,9 +94,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
 
     }
 
-
-
-        private void  sendRemoteMessage(String remoteMessageBody,String type){
+    private void  sendRemoteMessage(String remoteMessageBody,String type){
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
                 Constants.getRemoteMessageHeaders(),remoteMessageBody
         ).enqueue(new Callback<String>() {
@@ -111,15 +109,11 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                             builder.setServerURL(serverURL);
                             builder.setWelcomePageEnabled(false);
                             builder.setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM));
-                            if (meetingType != null) {
+                            if(meetingType.equals("audio")) {
                                 builder.setVideoMuted(true);
+                                builder.setAudioOnly(true);
                             }
-                            JitsiMeetConferenceOptions conferenceOptions =
-                                    new JitsiMeetConferenceOptions.Builder()
-                                            .setServerURL(serverURL)
-                                            .setWelcomePageEnabled(false)
-                                            .setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
-                                            .build();
+
                             JitsiMeetActivity.launch(IncomingInvitationActivity.this, builder.build());
                             finish();
 
