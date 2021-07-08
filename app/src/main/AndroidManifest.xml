@@ -15,14 +15,17 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="m">
-        <activity android:name=".activities.SplashScreenActivity"
+        <activity android:name=".activities.OnBoardActivity"></activity>
+        <activity android:name="com.example.gotomeeting.OnBoardActivity" />
+        <activity
+            android:name=".activities.SplashScreenActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-    </activity>
+        </activity>
         <activity
             android:name=".activities.OutgoingInvitationActivity"
             android:screenOrientation="portrait" />
@@ -32,9 +35,7 @@
         <activity
             android:name=".activities.SignInActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.SignUpActivity"
             android:screenOrientation="portrait"

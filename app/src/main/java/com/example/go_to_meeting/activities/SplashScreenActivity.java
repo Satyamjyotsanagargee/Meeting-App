@@ -80,7 +80,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 editor.putBoolean("firstTime", false);
                 editor.apply();
 
-                Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, OnBoardActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
 

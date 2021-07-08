@@ -14,5 +14,8 @@
     <color name="colorMeetingInvitationEnd">#8A1AAA</color>
     <color name="colorTextDark">@android:color/black</color>
     <color name="colorTextLight">@android:color/white</color>
+    <color name="colorIconLight">@android:color/white</color>
+    <color name="colorInactive">#BDBDBD</color>
+
 
 </resources>

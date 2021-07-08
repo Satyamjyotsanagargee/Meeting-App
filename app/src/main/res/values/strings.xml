@@ -14,7 +14,6 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="No_account">don\'t have an account</string>
     <string name="Sign_Up">sign up</string>
-
     <string name="sign_in_your_account">Sign in to your account</string>
     <string name="App_name">app_name</string>
     <string name="sign_up">Sign Up</string>
@@ -31,4 +30,14 @@
     <string name="sending_meeting_invitation">Sending Meeting Invitation</string>
     <string name="powered_by">Powered by</string>
     <string name="go_to_meet">Go To Meet</string>
+    <string name="get_started">Get Started</string>
+    <string name="onboarding_title1">Instant Setup</string>
+    <string name="onboarding_desc1">Set up or join a video/audio meeting or conference instantly</string>
+    <string name="onboarding_title2">Everywhere Together</string>
+    <string name="onboarding_title3">Instant Messaging</string>
+    <string name="onboarding_title4">Schedule Meetings</string>
+    <string name="onboarding_desc2">Enjoy high quality audio &amp; video anywhere and stay in touch.</string>
+    <string name="onboarding_desc3">Stay connected with instant messaging in between the meeting.</string>
+    <string name="onboarding_desc4">Schedule your meetings and conferences with ease.</string>
+
 </resources>
