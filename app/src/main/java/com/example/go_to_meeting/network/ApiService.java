@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+//In this class we define API for sending remote message
 
 public interface ApiService {
     @POST("send")

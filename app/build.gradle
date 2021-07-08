@@ -58,6 +58,8 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     //Jitsi Meet
     implementation ('org.jitsi.react:jitsi-meet-sdk:2.8.2') { transitive = true }
+    //Intent Animation Library
+    implementation 'com.github.hajiyevelnur92:intentanimation:1.0'
 
 
 }

@@ -5,6 +5,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit = null;
+    //Here we are using retrofit for sending remote messages using firebase cloud messaging
 
     public static Retrofit getClient() {
         if (retrofit == null) {

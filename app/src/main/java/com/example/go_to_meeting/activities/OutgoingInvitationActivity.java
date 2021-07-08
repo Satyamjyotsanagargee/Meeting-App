@@ -1,44 +1,33 @@
 package com.example.go_to_meeting.activities;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.session.MediaSession;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.models.User;
 import com.example.go_to_meeting.network.ApiClient;
 import com.example.go_to_meeting.network.ApiService;
 import com.example.go_to_meeting.utilities.Constants;
 import com.example.go_to_meeting.utilities.PreferenceManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.auth.Token;
-import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.UUID;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -135,15 +124,12 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         try {
             //preparing body for api request
             JSONArray tokens = new JSONArray();
-            if(receiverToken!=null)
-            {
+            if (receiverToken != null) {
                 tokens.put(receiverToken);
             }
-            if(receivers!=null && receivers.size()>0)
-            {
-                StringBuilder userNames=new StringBuilder();
-                for(int i=0;i<receivers.size();i++)
-                {
+            if (receivers != null && receivers.size() > 0) {
+                StringBuilder userNames = new StringBuilder();
+                for (int i = 0; i < receivers.size(); i++) {
                     tokens.put(receivers.get(i).token);
                     userNames.append(receivers.get(i).firstName).append(" ").append(receivers.get(i).lastName).append("\n");
                 }
@@ -209,14 +195,15 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         });
     }
 
+    //Cancel meeting invitation from sender side
     private void cancelInvitation(String receiverToken, ArrayList<User> receivers) {
         try {
             JSONArray tokens = new JSONArray();
-            if(receiverToken!=null){
+            if (receiverToken != null) {
                 tokens.put(receiverToken);
             }
-            if(receivers != null && receivers.size() > 0) {
-                for(User user : receivers) {
+            if (receivers != null && receivers.size() > 0) {
+                for (User user : receivers) {
                     tokens.put(user.token);
                 }
             }
@@ -234,32 +221,32 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             finish();
         }
     }
+    //if you get response that someone accept the meeting then proceed with the meeting else you get a response that your meeting is rejected
   private   BroadcastReceiver invitationResponseReceiver=new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-    String type=intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE);
-    if(type!=null){
-        if(type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED))
-        {
-            try {
-                URL serverURL = new URL("https://meet.jit.si");
-                JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
-                builder.setServerURL(serverURL);
-                builder.setWelcomePageEnabled(false);
-                builder.setRoom(meetingRoom);
-                if (meetingType.equals("audio")) {
-                    builder.setVideoMuted(true);
-                }
-                JitsiMeetActivity.launch(OutgoingInvitationActivity.this, builder.build());
-                finish();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE);
+            if (type != null) {
+                if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
+                    try {
+                        URL serverURL = new URL("https://meet.jit.si");
+                        JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
+                        builder.setServerURL(serverURL);
+                        builder.setWelcomePageEnabled(false);
+                        builder.setRoom(meetingRoom);
+                        if (meetingType.equals("audio")) {
+                            builder.setVideoMuted(true);
+                        }
+                        JitsiMeetActivity.launch(OutgoingInvitationActivity.this, builder.build());
+                        finish();
 
-            }catch (Exception exception){
-                Toast.makeText(OutgoingInvitationActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                finish();
-            }
+                    } catch (Exception exception) {
+                        Toast.makeText(OutgoingInvitationActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
 
-        }else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
+                } else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
         {
             rejectionCount += 1;
             if(rejectionCount == totalReceivers) {

@@ -10,24 +10,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.listeners.UsersListener;
 import com.example.go_to_meeting.models.User;
-
 import java.util.ArrayList;
 import java.util.List;
+//Adapter class for getting data from model and show it on view for the user
 
 /*The RecyclerView.Adapter that last bound this RecyclerView.ViewHolder
  null if this RecyclerView.ViewHolder is not bound by any adapter*/
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    private List<User>users;
+    private List<User> users;
     private UsersListener usersListener;
-    private List<User>selectedUsers;
+    private List<User> selectedUsers;
 
 
-    public UserAdapter(List<User> users,UsersListener usersListener)
-    {
+    public UserAdapter(List<User> users, UsersListener usersListener) {
         this.users = users;
-        this.usersListener=usersListener;
-        selectedUsers=new ArrayList<>();
+        this.usersListener = usersListener;
+        selectedUsers = new ArrayList<>();
 
     }
 
@@ -37,7 +36,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @NonNull
     @Override
-   // creates and initializes the ViewHolder and its associated View
+    // creates and initializes the ViewHolder and its associated View
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new UserViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
@@ -73,8 +72,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             textEmail = itemView.findViewById(R.id.textEmail);
             imageAudioMeeting = itemView.findViewById(R.id.imageAudioMeeting);
             imageVideoMeeting = itemView.findViewById(R.id.imageVideoMeeting);
-            userContainer=itemView.findViewById(R.id.userContainer);
-            imageSelected=itemView.findViewById(R.id.imageSelected);
+            userContainer = itemView.findViewById(R.id.userContainer);
+            imageSelected = itemView.findViewById(R.id.imageSelected);
 
         }
 
@@ -95,20 +94,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 return true;
             });
             userContainer.setOnClickListener(v -> {
-                if(imageSelected.getVisibility()==View.VISIBLE)
-                {
+                if (imageSelected.getVisibility() == View.VISIBLE) {
                     selectedUsers.remove(user);
                     imageSelected.setVisibility(View.GONE);
                     imageVideoMeeting.setVisibility(View.VISIBLE);
                     imageAudioMeeting.setVisibility(View.VISIBLE);
-                    if(selectedUsers.size()==0)
-                    {
+                    if (selectedUsers.size() == 0) {
                         usersListener.onMultipleUsersAction(false);
                     }
 
-                }else{
-                    if(selectedUsers.size()>0)
-                    {
+                } else {
+                    if (selectedUsers.size() > 0) {
                         selectedUsers.add(user);
                         imageSelected.setVisibility(View.VISIBLE);
                         imageVideoMeeting.setVisibility(View.GONE);

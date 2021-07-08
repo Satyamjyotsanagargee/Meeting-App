@@ -1,7 +1,6 @@
 package com.example.go_to_meeting.activities;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,10 +20,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import maes.tech.intentanim.CustomIntent;
 
 public class MainActivity extends AppCompatActivity implements UsersListener {
     private PreferenceManager preferenceManager;
@@ -35,12 +35,13 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
     private ImageView imageConference;
 
     //For Title on the top of screen take first and last name from preference manager
+    //Set the title of the screen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preferenceManager = new PreferenceManager(getApplicationContext());
-        imageConference=findViewById(R.id.imageConference);
+        imageConference = findViewById(R.id.imageConference);
 
         TextView textTitle = findViewById(R.id.textTitle);
         textTitle.setText(String.format(
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
         ));
         findViewById(R.id.textSignOut).setOnClickListener(v -> signOut());
-         //If task is successful put FCM token in database
+        //If task is successful put FCM token in database
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 sendFCMTokenToDatabase(task.getResult());
@@ -108,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     }
                 });
     }
-      //To send and receive invitation we need FCM token of Particular User
+
+    //To send and receive invitation we need FCM token of Particular User
     private void sendFCMTokenToDatabase(String token) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference =
@@ -117,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
                 );
         documentReference.update(Constants.KEY_FCM_TOKEN, token)
-
                 .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to send Token: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    //After signing out get the particular user from shared preference and delete the token of that user
     private void signOut() {
         Toast.makeText(this, "Signing Out...", Toast.LENGTH_SHORT).show();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                 .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to sign out", Toast.LENGTH_SHORT).show());
 
     }
+    //To initiate a video or audio meeting a token is required if token is not available it display a message that user is not available for the meet
 
     @Override
     public void initiateVideoMeeting(User user) {
@@ -156,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
             intent.putExtra("user", user);
             intent.putExtra("type", "video");
             startActivity(intent);
+            CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
         }
 
     }
@@ -171,10 +175,11 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     Toast.LENGTH_SHORT
             ).show();
         } else {
-            Intent intent=new Intent(getApplicationContext(),OutgoingInvitationActivity.class);
-            intent.putExtra("user",user);
-            intent.putExtra("type","audio");
+            Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
+            intent.putExtra("user", user);
+            intent.putExtra("type", "audio");
             startActivity(intent);
+            CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
 
         }
 
@@ -182,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
     @Override
     public void onMultipleUsersAction(Boolean isMultipleUsersSelected) {
-        if(isMultipleUsersSelected) {
+        if (isMultipleUsersSelected) {
             imageConference.setVisibility(View.VISIBLE);
             imageConference.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
@@ -190,11 +195,11 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                 intent.putExtra("type", "video");
                 intent.putExtra("isMultiple", true);
                 startActivity(intent);
+                CustomIntent.customType(MainActivity.this, "fadein-to-fadeout");
 
             });
-        }
-            else {
+        } else {
             imageConference.setVisibility(View.GONE);
         }
     }
-    }
+}

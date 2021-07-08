@@ -10,6 +10,8 @@ public class Constants {
     public static String KEY_EMAIL="email";
     public static String KEY_PASSWORD="password";
     public static String KEY_USER_ID="USER_ID";
+    //To send and receive meeting invitation We need FCM token of particular user
+    //We will update user's token after successful signUp and remove token after signOut
     public static String KEY_FCM_TOKEN="fcm_token";
     public static final String KEY_PREFERENCE_NAME="VideoMeetingPreference";
     public static final String KEY_IS_SIGNED_IN="IsSignedIn";

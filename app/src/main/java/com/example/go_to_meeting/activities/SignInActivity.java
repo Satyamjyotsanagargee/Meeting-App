@@ -1,10 +1,5 @@
 package com.example.go_to_meeting.activities;
-
-
-
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -12,12 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.utilities.Constants;
 import com.example.go_to_meeting.utilities.PreferenceManager;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +25,9 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        //we use the default SharedPreferences to access the user's preferences
         preferenceManager = new PreferenceManager(getApplicationContext());
+        //Retrieve a boolean value from the preferences.
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -45,6 +39,7 @@ public class SignInActivity extends AppCompatActivity {
         buttonSignIn = findViewById(R.id.buttonSignIn);
         signInProgressBar = findViewById(R.id.signInProgressBar);
         //Before clicking sign in button enter your credentials
+        //After clicking on signIn button it checks your credentials then redirect to signIn function
         buttonSignIn.setOnClickListener(v -> {
             if (inputEmail.getText().toString().trim().isEmpty()) {
                 Toast.makeText(SignInActivity.this, "Enter Email", Toast.LENGTH_SHORT).show();
@@ -59,6 +54,7 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+
     private void signIn() {
         //After clicking signIn button make invisible and signIn button visible
         buttonSignIn.setVisibility(View.INVISIBLE);
@@ -72,7 +68,7 @@ public class SignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                       //After clicking button put data in shared preference
+                        //After clicking button put data in shared preference
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_FIRST_NAME, documentSnapshot.getString(Constants.KEY_FIRST_NAME));
@@ -87,8 +83,10 @@ public class SignInActivity extends AppCompatActivity {
                         then that existing task is brought to the foreground, cleared,
                         a new instance of Activity is created at the root of the task and this task is put on top of the current task */
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        //Now start the activity
                         startActivity(intent);
                     } else {
+                        /*if sign In fails due then it shows the message make progressbar Invisible and signIn button visible        */
                         signInProgressBar.setVisibility(View.INVISIBLE);
                         buttonSignIn.setVisibility(View.VISIBLE);
                         Toast.makeText(SignInActivity.this, "Unable to sign in", Toast.LENGTH_SHORT).show();

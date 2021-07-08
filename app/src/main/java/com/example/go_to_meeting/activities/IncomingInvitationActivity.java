@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class IncomingInvitationActivity extends AppCompatActivity {
-    public String meetingType=null;
+    public String meetingType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +33,13 @@ public class IncomingInvitationActivity extends AppCompatActivity {
         //For displaying user details in incoming screen
         ImageView imageMeetingType = findViewById(R.id.imageMeetingType);
         //Here we are getting data from OnMessageReceived method from messaging service
-         meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
+        meetingType = getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_TYPE);
         if (meetingType != null) {
             if (meetingType.equals("video")) {
                 //Setting video icon to image view
                 imageMeetingType.setImageResource(R.drawable.ic_video);
 
-            } else{
+            } else {
                 imageMeetingType.setImageResource(R.drawable.ic_audio);
             }
         }
@@ -94,14 +94,14 @@ public class IncomingInvitationActivity extends AppCompatActivity {
 
     }
 
-    private void  sendRemoteMessage(String remoteMessageBody,String type){
+    private void sendRemoteMessage(String remoteMessageBody, String type) {
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
-                Constants.getRemoteMessageHeaders(),remoteMessageBody
+                Constants.getRemoteMessageHeaders(), remoteMessageBody
         ).enqueue(new Callback<String>() {
             @Override
             //Implementing the facility of accept or reject meeting invitation
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
                         try {
                             URL serverURL = new URL("https://meet.jit.si");
@@ -109,7 +109,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                             builder.setServerURL(serverURL);
                             builder.setWelcomePageEnabled(false);
                             builder.setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM));
-                            if(meetingType.equals("audio")) {
+                            if (meetingType.equals("audio")) {
                                 builder.setVideoMuted(true);
                                 builder.setAudioOnly(true);
                             }
@@ -122,11 +122,11 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                             finish();
                         }
 
-                    }else{
+                    } else {
                         Toast.makeText(IncomingInvitationActivity.this, "Invitation Rejected", Toast.LENGTH_SHORT).show();
                         finish();
                     }
-                    } else {
+                } else {
                     Toast.makeText(IncomingInvitationActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -140,6 +140,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
             }
         });
     }
+
     //Getting Invitation/Rejection back from receiver
     private BroadcastReceiver invitationResponseReceiver = new BroadcastReceiver() {
         @Override
@@ -163,6 +164,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                 new IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
         );
     }
+
     //Receiver to receive broadcast message after rejecting response
     protected void onStop() {
         super.onStop();
