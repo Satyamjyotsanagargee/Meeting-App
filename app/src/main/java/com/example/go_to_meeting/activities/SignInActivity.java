@@ -1,5 +1,7 @@
 package com.example.go_to_meeting.activities;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.utilities.Constants;
 import com.example.go_to_meeting.utilities.PreferenceManager;

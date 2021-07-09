@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import  com.example.go_to_meeting.R;
+
+import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.adapters.OnBoardingSliderAdapter;
 
 import maes.tech.intentanim.CustomIntent;
@@ -86,7 +87,6 @@ public class OnBoardActivity extends AppCompatActivity {
 
             indicatorsLayout.addView(indicators[i]);
         }
-
         if (indicators.length > 0) {
             indicators[position].setText(Html.fromHtml("&#183;"));
             indicators[position].setTextSize(40);

@@ -1,7 +1,10 @@
 package com.example.go_to_meeting.firebase;
+
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.example.go_to_meeting.activities.IncomingInvitationActivity;
 import com.example.go_to_meeting.utilities.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;

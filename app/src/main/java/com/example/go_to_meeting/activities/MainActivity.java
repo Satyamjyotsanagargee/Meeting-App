@@ -1,13 +1,20 @@
 package com.example.go_to_meeting.activities;
+
+
 import android.content.Intent;
+
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.adapters.UserAdapter;
 import com.example.go_to_meeting.listeners.UsersListener;
@@ -20,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
     private TextView textErrorMessage;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView imageConference;
+
 
     //For Title on the top of screen take first and last name from preference manager
     //Set the title of the screen
@@ -69,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::getUsers);
         getUsers();
+
 
     }
 
@@ -202,4 +212,6 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
             imageConference.setVisibility(View.GONE);
         }
     }
+
+
 }

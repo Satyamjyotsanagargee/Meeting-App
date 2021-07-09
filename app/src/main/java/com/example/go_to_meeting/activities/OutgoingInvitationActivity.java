@@ -1,7 +1,9 @@
 package com.example.go_to_meeting.activities;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.models.User;
 import com.example.go_to_meeting.network.ApiClient;
@@ -20,14 +23,17 @@ import com.example.go_to_meeting.utilities.PreferenceManager;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.UUID;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,8 +49,6 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
     private TextView textEmail;
     private int totalReceivers = 0;
     private int rejectionCount = 0;
-
-
 
 
     @Override
@@ -120,7 +124,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
 
     }
 
-    private void initiateMeeting(String meetingType, String receiverToken, ArrayList<User>receivers) {
+    private void initiateMeeting(String meetingType, String receiverToken, ArrayList<User> receivers) {
         try {
             //preparing body for api request
             JSONArray tokens = new JSONArray();
@@ -166,7 +170,8 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             finish();
         }
     }
-//for sending remote message
+
+    //for sending remote message
     private void sendRemoteMessage(String remoteMessageBody, String type) {
         //Network call using Retrofit
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
@@ -221,8 +226,9 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             finish();
         }
     }
+
     //if you get response that someone accept the meeting then proceed with the meeting else you get a response that your meeting is rejected
-  private   BroadcastReceiver invitationResponseReceiver=new BroadcastReceiver() {
+    private BroadcastReceiver invitationResponseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE);
@@ -246,17 +252,16 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
                     }
 
 
-                } else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED))
-        {
-            rejectionCount += 1;
-            if(rejectionCount == totalReceivers) {
-                Toast.makeText(context, "Invitation Rejected!", Toast.LENGTH_SHORT).show();
-                finish();
+                } else if (type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)) {
+                    rejectionCount += 1;
+                    if (rejectionCount == totalReceivers) {
+                        Toast.makeText(context, "Invitation Rejected!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }
             }
         }
-    }
-    }
-};
+    };
 
     @Override
     protected void onStart() {

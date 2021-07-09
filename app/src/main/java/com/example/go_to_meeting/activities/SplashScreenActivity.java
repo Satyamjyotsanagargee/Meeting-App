@@ -1,7 +1,10 @@
 package com.example.go_to_meeting.activities;
-import   com.example.go_to_meeting.R;
+
+import com.example.go_to_meeting.R;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +27,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     //Other Variables
     private Animation topAnimation, bottomAnimation, startAnimation, endAnimation;
     private SharedPreferences onBoardingPreference;
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -85,7 +87,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 startActivity(intent);
 
             } else {
-                Intent intent = new Intent(SplashScreenActivity.this,SignInActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, SignInActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
 

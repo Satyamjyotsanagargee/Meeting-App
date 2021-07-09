@@ -1,15 +1,19 @@
 package com.example.go_to_meeting.adapters;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.go_to_meeting.R;
 import com.example.go_to_meeting.listeners.UsersListener;
 import com.example.go_to_meeting.models.User;
+
 import java.util.ArrayList;
 import java.util.List;
 //Adapter class for getting data from model and show it on view for the user
